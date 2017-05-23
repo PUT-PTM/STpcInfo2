@@ -1,4 +1,6 @@
-﻿using System;
+using System;
+using System.IO.Ports;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,45 +8,90 @@ using System.Threading.Tasks;
 using System.Management;
 
 
+
+
 namespace ptm
 {
- 
-    
-    class Program
+    public class PortChat
     {
+        //static bool _continue;
+        static SerialPort _serialPort;
+
         static void Main(string[] args)
         {
-            Temperature Temp = new Temperature();  
             
-            GetInfo("Win32_Processor", "Name");
+            string message;
+            StringComparer stringComparer = StringComparer.OrdinalIgnoreCase;
 
-            GetInfo("Win32_VideoController", "Name");
 
-            Console.WriteLine("Fan speed /min");
-            GetInfo("Win32_Fan", "DesiredSpeed");//
+            // Create a new SerialPort object with default settings.
+            _serialPort = new SerialPort();
 
-            Console.WriteLine("Battery status:");//1 - discharging, 2-unknown(plugged),Fully Charged (3),
-            //Low (4),Critical (5),Charging (6),Charging and High (7),
-            //Charging and Low (8),Charging and Critical (9),Undefined (10),Partially Charged (11)
-            GetInfo("Win32_Battery", "BatteryStatus");
+            // Allow the user to set the appropriate properties.
+            _serialPort.PortName = SetPortName();
+            _serialPort.BaudRate = 9600;
+            _serialPort.Parity = Parity.None;
+            _serialPort.DataBits = 8;
+            _serialPort.StopBits = StopBits.One;
+            _serialPort.Handshake = Handshake.None;
 
-            Console.WriteLine("Core temperature:"); 
-            Console.WriteLine(Temperature.Temperatures[0].CurrentValue);
+            // Set the read/write timeouts
+            _serialPort.ReadTimeout = 500;
+            _serialPort.WriteTimeout = 500;
 
-            Console.Read();
+            _serialPort.Open();
+            //_continue = true;
 
+
+           
+
+
+
+            //Console.WriteLine("Type QUIT to exit");
+
+            while (true) //(_continue)
+            {
+                //message = Console.ReadLine();
+                Temperature Temp = new Temperature();
+                message = GetInfo("Win32_Processor", "Name") + GetInfo("Win32_VideoController", "Name") + GetInfo("Win32_Fan", "DesiredSpeed") +
+               GetInfo("Win32_Battery", "BatteryStatus") + ":" + Temperature.Temperatures[0].CurrentValue.ToString();
+                
+                _serialPort.WriteLine(message);
+                Thread.Sleep(8000);
+
+            }
+
+
+            _serialPort.Close();
         }
 
-
-        private static void GetInfo(String component, String info)
+        private static string GetInfo(String component, String info)
         {
             ManagementObjectSearcher obj = new ManagementObjectSearcher("root\\CIMV2", "SELECT * FROM " + component);
             foreach (ManagementObject mj in obj.Get())
             {
-                Console.WriteLine(Convert.ToString(mj[info]));
+                return ":"+Convert.ToString(mj[info]);
             }
+            return ":"+component;
         }
 
+        // Display Port values and prompt user to enter a port.
+        public static string SetPortName()
+        {
+            string portName;
+
+            Console.WriteLine("Available Ports:");
+            foreach (string s in SerialPort.GetPortNames())
+            {
+                Console.WriteLine(" {0}", s);
+            }
+
+            Console.Write("Enter COM port value : ");
+            portName = Console.ReadLine();
+            return portName;
+        }
+
+
+
     }
-    }
-   
+}
