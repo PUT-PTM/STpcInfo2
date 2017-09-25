@@ -10,14 +10,14 @@ The project uses STM32 HAL libraries to interact with the hardware on the STM32f
 - STSW-STM32102 - STM32 Virtual COM Port Driver
 - Visual Studio 2012
 ## C# Application
-This application is using System.Management and System.Diagnostics libraries to get current information about the system as:
+1. This application is using System.Management and System.Diagnostics libraries to get current information about the system as:
 - current clock speed
 - core temperature
 - fan speed
 - battery status
 - available RAM
-and more
-Then sends the data as string through destined serial port.
+- and more
+2. Then sends the data as string through destined serial port.
 ## How to run
 1. Connnect ssd1306 display and UART-USB converter as shown in the following pins scheme
 - PA10 - USART1_RX
