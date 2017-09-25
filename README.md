@@ -2,7 +2,7 @@
 ## Overview
 This project was designed to show real-time system information on a ssd1306 display using a STM32f4 board and and a UART-USB converter.
 ## Description
-The project uses STM32 HAL libraries to interact with the hardware on the STM32f4 board, the ssd1306 display and the UART-USB converter. A C# application is responsible for sending current information about the system. The project also makes use of Virtual COM Port.
+The project uses STM32 HAL libraries to interact with the hardware on the STM32f4 board, the ssd1306 display and the UART-USB converter. A C# application is responsible for sending current information about the system.
 ## Tools
 - System Workbench for STM32
 - STM32 ST-LINK Utility
