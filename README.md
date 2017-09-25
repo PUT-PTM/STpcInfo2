@@ -16,7 +16,7 @@ This application is using System.Management and System.Diagnostics libraries to 
 - fan speed
 - battery status
 - available RAM
-- and more
+- and more.
 Then sends the data as string through destined serial port.
 ## How to run
 1. Connnect ssd1306 display and UART-USB converter as shown in the following pins scheme
